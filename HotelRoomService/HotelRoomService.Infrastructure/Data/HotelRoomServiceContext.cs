@@ -14,6 +14,16 @@ namespace HotelRoomService.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Room>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Name).IsRequired().HasMaxLength(50);
+                entity.Property(r => r.Size).IsRequired();
+                entity.Property(r => r.IsAvailable).IsRequired();
+                entity.Property(r => r.Status).IsRequired();
+                entity.Property(r => r.Details).HasMaxLength(1000);
+            });
         }
     }
 }
