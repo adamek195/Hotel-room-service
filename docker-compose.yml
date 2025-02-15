@@ -7,15 +7,16 @@ services:
       dockerfile: Dockerfile
     container_name: hotelroomservice-api
     ports:
-      - "5000:8080"
+      - "5000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_HTTP_PORTS=5000
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
 
   postgres_db:
-    image: postgres:16
+    image: postgres:latest
     container_name: postgres_db
     restart: always
     environment:
@@ -26,6 +27,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: "5s"
+      retries: 5
+      start_period: "10s"
 
 volumes:
   postgres_data:
