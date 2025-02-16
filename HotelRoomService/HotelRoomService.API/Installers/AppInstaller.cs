@@ -5,6 +5,7 @@ using HotelRoomService.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using HotelRoomService.API.Filters;
+using System.Text.Json.Serialization;
 
 namespace HotelRoomService.API.Installers
 {
@@ -20,7 +21,11 @@ namespace HotelRoomService.API.Installers
                 options.Filters.Add(new GlobalExceptionFilter());
             });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                }); ;
         }
     }
 }
