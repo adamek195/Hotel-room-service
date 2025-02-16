@@ -5,6 +5,7 @@ namespace HotelRoomService.Application.Dtos
     public class CreateRoomRequest
     {
         [Required(ErrorMessage = "Room name is required.")]
+        [MaxLength(50, ErrorMessage = "Room name cannot exceed 50 characters.")]
         public string? Name { get; set; }
 
         [Range(1, 6, ErrorMessage = "Invalid value for size.")]

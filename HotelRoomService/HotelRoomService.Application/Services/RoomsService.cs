@@ -34,8 +34,8 @@ namespace HotelRoomService.Application.Services
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ArgumentException("Room name cannot be empty.");
 
-            if (request.Size <= 0 || request.Size >= 6)
-                throw new ArgumentException("Size must be greater than zero and smaller than six.");
+            if (request.Size <= 0 || request.Size >= 7)
+                throw new ArgumentException("Size must be greater than zero and smaller than seven.");
 
             var room = new Room
             {
