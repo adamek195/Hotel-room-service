@@ -1,4 +1,5 @@
 ﻿using HotelRoomService.Application.Dtos;
+using HotelRoomService.Application.Exceptions;
 using HotelRoomService.Application.Interfaces;
 using HotelRoomService.Domain.Entities;
 using HotelRoomService.Domain.Interfaces;
@@ -32,10 +33,10 @@ namespace HotelRoomService.Application.Services
         public async Task<Guid> CreateRoomAsync(CreateRoomRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
-                throw new ArgumentException("Room name cannot be empty.");
+                throw new BadRequestException("Room name cannot be empty.");
 
             if (request.Size <= 0 || request.Size >= 7)
-                throw new ArgumentException("Size must be greater than zero and smaller than seven.");
+                throw new BadRequestException("Size must be greater than zero and smaller than seven.");
 
             var room = new Room
             {

@@ -4,6 +4,7 @@ using HotelRoomService.Domain.Interfaces;
 using HotelRoomService.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using HotelRoomService.API.Filters;
 
 namespace HotelRoomService.API.Installers
 {
@@ -13,6 +14,11 @@ namespace HotelRoomService.API.Installers
         {
             services.AddTransient<IRoomsService, RoomsService>();
             services.AddTransient<IRoomsRepository, RoomsRepository>();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new GlobalExceptionFilter());
+            });
 
             services.AddControllers();
         }
