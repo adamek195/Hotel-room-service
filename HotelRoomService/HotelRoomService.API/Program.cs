@@ -1,13 +1,12 @@
+using HotelRoomService.API.Installers;
 using HotelRoomService.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<HotelRoomServiceContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("HotelRoomServiceCS")));
+builder.Services.InstallServicesInAssembly(builder.Configuration);
 
 var app = builder.Build();
 
@@ -17,6 +16,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.UseRouting();
+app.MapControllers();
 
 app.Run();

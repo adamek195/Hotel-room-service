@@ -1,8 +1,8 @@
-﻿using System;
+﻿using HotelRoomService.Domain.Entities;
 
-namespace HotelRoomService.Domain.Entities
+namespace HotelRoomService.Application.Dtos
 {
-    public class Room
+    public class RoomDto
     {
         public Guid Id { get; set; }
 
