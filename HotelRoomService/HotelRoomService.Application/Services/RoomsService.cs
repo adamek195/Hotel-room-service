@@ -30,12 +30,29 @@ namespace HotelRoomService.Application.Services
             });
         }
 
+        public async Task<RoomDto> GetRoomByIdAsync(Guid id)
+        {
+            var room = await _roomsRepository.GetRoomByIdAsync(id);
+            if (room == null)
+                throw new NotFoundException($"Cannot find room with id '{id}'.");
+
+            return new RoomDto
+            {
+                Id = room.Id,
+                Name = room.Name,
+                Size = room.Size,
+                IsAvailable = room.IsAvailable,
+                Status = room.Status,
+                Details = room.Details
+            };
+        }
+
         public async Task<Guid> CreateRoomAsync(CreateRoomRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new BadRequestException("Room name cannot be empty.");
 
-            if (request.Size <= 0 || request.Size >= 7)
+            if (request.Size <= 0 || request.Size >= 11)
                 throw new BadRequestException("Size must be greater than zero and smaller than seven.");
 
             var room = new Room

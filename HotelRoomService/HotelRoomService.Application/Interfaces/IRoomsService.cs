@@ -6,6 +6,8 @@ namespace HotelRoomService.Application.Interfaces
     {
         Task<IEnumerable<RoomDto>> GetRoomsAsync(string? name, int? size, bool? available);
 
+        Task<RoomDto> GetRoomByIdAsync(Guid id);
+
         Task<Guid> CreateRoomAsync(CreateRoomRequest request);
     }
 }

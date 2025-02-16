@@ -2,6 +2,7 @@
 using HotelRoomService.Domain.Interfaces;
 using HotelRoomService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,11 @@ namespace HotelRoomService.Infrastructure.Repositories
                 query = query.Where(x => x.IsAvailable == available.Value);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<Room?> GetRoomByIdAsync(Guid id)
+        {
+            return await _context.Rooms.FindAsync(id);
         }
 
         public async Task AddRoomAsync(Room room)

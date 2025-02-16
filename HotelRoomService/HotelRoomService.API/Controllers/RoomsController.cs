@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using HotelRoomService.Application.Dtos;
+using System;
 
 namespace HotelRoomService.API.Controllers
 {
@@ -21,6 +22,14 @@ namespace HotelRoomService.API.Controllers
         {
             var rooms = await _roomService.GetRoomsAsync(name, size, available);
             return Ok(rooms);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRoom(Guid id)
+        {
+            var room = await _roomService.GetRoomByIdAsync(id);
+
+            return Ok(room);
         }
 
         [HttpPost]
