@@ -44,5 +44,11 @@ namespace HotelRoomService.Infrastructure.Repositories
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateRoomAsync(Room room)
+        {
+            _context.Rooms.Update(room);
+            await _context.SaveChangesAsync();
+        }
     }
 }

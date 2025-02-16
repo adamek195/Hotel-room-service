@@ -1,6 +1,7 @@
 ﻿using HotelRoomService.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace HotelRoomService.API.Filters
 {
@@ -23,6 +24,11 @@ namespace HotelRoomService.API.Filters
             {
                 response.Content = context.Exception.Message;
                 response.StatusCode = 404;
+            }
+            if (context.Exception is ArgumentNullException)
+            {
+                response.Content = context.Exception.Message;
+                response.StatusCode = 400;
             }
 
             context.Result = response;

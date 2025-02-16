@@ -25,7 +25,7 @@ namespace HotelRoomService.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRoom(Guid id)
+        public async Task<IActionResult> GetRoom([FromRoute] Guid id)
         {
             var room = await _roomService.GetRoomByIdAsync(id);
 
@@ -33,10 +33,17 @@ namespace HotelRoomService.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest request)
+        public async Task<IActionResult> CreateRoom([FromBody] RoomRequest request)
         {
             var roomId = await _roomService.CreateRoomAsync(request);
             return Created($"api/Rooms/{roomId}", roomId);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateRoom([FromRoute] Guid id, [FromBody] RoomRequest request)
+        {
+            var room = await _roomService.UpdateRoomAsync(id, request);
+            return Ok(room);
         }
     }
 }

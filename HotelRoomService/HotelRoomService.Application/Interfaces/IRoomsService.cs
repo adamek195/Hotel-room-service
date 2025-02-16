@@ -8,6 +8,8 @@ namespace HotelRoomService.Application.Interfaces
 
         Task<RoomDto> GetRoomByIdAsync(Guid id);
 
-        Task<Guid> CreateRoomAsync(CreateRoomRequest request);
+        Task<Guid> CreateRoomAsync(RoomRequest request);
+
+        Task<RoomDto> UpdateRoomAsync(Guid id, RoomRequest request);
     }
 }

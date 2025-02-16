@@ -12,5 +12,7 @@ namespace HotelRoomService.Domain.Interfaces
         Task<Room?> GetRoomByIdAsync(Guid id);
 
         Task AddRoomAsync(Room room);
+
+        Task UpdateRoomAsync(Room room);
     }
 }
