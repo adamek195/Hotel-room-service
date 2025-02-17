@@ -11,5 +11,7 @@ namespace HotelRoomService.Application.Interfaces
         Task<Guid> CreateRoomAsync(RoomRequest request);
 
         Task<RoomDto> UpdateRoomAsync(Guid id, RoomRequest request);
+
+        Task<RoomDto> ChangeStatusAsync(Guid id, StatusRequest request);
     }
 }

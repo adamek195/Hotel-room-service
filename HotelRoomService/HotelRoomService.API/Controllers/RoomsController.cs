@@ -45,5 +45,12 @@ namespace HotelRoomService.API.Controllers
             var room = await _roomService.UpdateRoomAsync(id, request);
             return Ok(room);
         }
+
+        [HttpPatch("{id}/Status")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] Guid id, [FromBody] StatusRequest request)
+        {
+            var room = await _roomService.ChangeStatusAsync(id, request);
+            return Ok(room);
+        }
     }
 }
