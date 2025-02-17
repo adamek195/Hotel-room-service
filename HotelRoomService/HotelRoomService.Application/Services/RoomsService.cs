@@ -19,15 +19,7 @@ namespace HotelRoomService.Application.Services
         {
             var rooms = await _roomsRepository.GetRoomsAsync(name, size, available);
 
-            return rooms.Select(x => new RoomDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Size = x.Size,
-                IsAvailable = x.IsAvailable,
-                Status = x.Status,
-                Details = x.Details,
-            });
+            return rooms.Select(x => Map(x));
         }
 
         public async Task<RoomDto> GetRoomByIdAsync(Guid id)
@@ -36,15 +28,7 @@ namespace HotelRoomService.Application.Services
             if (room == null)
                 throw new NotFoundException($"Cannot find room with id '{id}'.");
 
-            return new RoomDto
-            {
-                Id = room.Id,
-                Name = room.Name,
-                Size = room.Size,
-                IsAvailable = room.IsAvailable,
-                Status = room.Status,
-                Details = room.Details
-            };
+            return Map(room);
         }
 
         public async Task<Guid> CreateRoomAsync(RoomRequest request)
@@ -110,15 +94,7 @@ namespace HotelRoomService.Application.Services
 
             await _roomsRepository.UpdateRoomAsync(room);
 
-            return new RoomDto
-            {
-                Id = room.Id,
-                Name = room.Name,
-                Size = room.Size,
-                IsAvailable = room.IsAvailable,
-                Status = room.Status,
-                Details = room.Details
-            };
+            return Map(room);
         }
 
         public async Task<RoomDto> ChangeStatusAsync(Guid id, StatusRequest request)
@@ -143,6 +119,14 @@ namespace HotelRoomService.Application.Services
 
 
             await _roomsRepository.UpdateRoomAsync(room);
+
+            return Map(room);
+        }
+
+        private RoomDto Map(Room room)
+        {
+            if (room == null)
+                throw new ArgumentNullException(nameof(room));
 
             return new RoomDto
             {
