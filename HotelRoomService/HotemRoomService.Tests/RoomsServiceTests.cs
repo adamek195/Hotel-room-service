@@ -180,5 +180,79 @@ namespace HotemRoomService.Tests
             Assert.Equal(3, result.Size);
             Assert.Equal("Room is available.", result.Details);
         }
+
+        [Fact]
+        public async Task ChangeStatusAsync_RequestIsNull_ThrowsArgumentNullException()
+        {
+            var roomId = Guid.NewGuid();
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _roomsService.ChangeStatusAsync(roomId, null));
+        }
+
+        [Fact]
+        public async Task ChangeStatusAsync_StatusIsNull_ThrowsBadRequestException()
+        {
+            var roomId = Guid.NewGuid();
+            var request = new StatusRequest { Status = null, Details = null };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.ChangeStatusAsync(roomId, request));
+        }
+
+        [Theory]
+        [InlineData(RoomStatus.ManuallyLocked)]
+        [InlineData(RoomStatus.Maintenance)]
+        public async Task ChangeStatusAsync_DetailsAreRequired_ThrowsBadRequestException(RoomStatus status)
+        {
+            var roomId = Guid.NewGuid();
+            var request = new StatusRequest { Status = status, Details = null };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.ChangeStatusAsync(roomId, request));
+        }
+
+        [Fact]
+        public async Task ChangeStatusAsync_RoomDoesNotExist_ThrowsNotFoundException()
+        {
+            var roomId = Guid.NewGuid();
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(null));
+
+            var request = new StatusRequest { Status = RoomStatus.Available, Details = null };
+
+            var exception = await Assert.ThrowsAsync<NotFoundException>(() => _roomsService.ChangeStatusAsync(roomId, request));
+        }
+
+        [Fact]
+        public async Task ChangeStatusAsync_StatusIsAvailable_ReturnsIsAvailableRoom()
+        {
+            var roomId = Guid.NewGuid();
+            var existingRoom = new Room { Id = roomId, Name = "Room 101", Size = 2, Details = null, Status = RoomStatus.Maintenance, IsAvailable = false };
+
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(existingRoom));
+
+            var request = new StatusRequest { Status = RoomStatus.Available, Details = "Room is available." };
+
+            var result = await _roomsService.ChangeStatusAsync(roomId, request);
+
+            Assert.Equal(RoomStatus.Available, result.Status);
+            Assert.True(result.IsAvailable);
+        }
+
+        [Theory]
+        [InlineData(RoomStatus.ManuallyLocked)]
+        [InlineData(RoomStatus.Maintenance)]
+        [InlineData(RoomStatus.Cleaning)]
+        [InlineData(RoomStatus.Booked)]
+        public async Task ChangeStatusAsync_StatusIsNotAvailable_ReturnsIsNotAvailableRoome(RoomStatus status)
+        {
+            var roomId = Guid.NewGuid();
+            var existingRoom = new Room { Id = roomId, Name = "Room 101", Size = 2, Details = null, Status = RoomStatus.Available, IsAvailable = true };
+
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(existingRoom));
+
+            var request = new StatusRequest { Status = status, Details = "Example details" };
+
+            var result = await _roomsService.ChangeStatusAsync(roomId, request);
+
+            Assert.Equal(status, result.Status);
+            Assert.False(result.IsAvailable);
+        }
     }
 }
