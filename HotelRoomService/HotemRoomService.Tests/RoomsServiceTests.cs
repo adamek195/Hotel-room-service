@@ -1,4 +1,4 @@
-using HotelRoomService.Domain.Interfaces;
+﻿using HotelRoomService.Domain.Interfaces;
 using HotelRoomService.Application.Services;
 using NSubstitute;
 using System.Threading.Tasks;
@@ -130,6 +130,55 @@ namespace HotemRoomService.Tests
             var result = await _roomsService.CreateRoomAsync(request);
 
             Assert.NotEqual(Guid.Empty, result);
+        }
+
+        [Fact]
+        public async Task UpdateRoomAsync_RequestIsNull_ThrowsArgumentNullException()
+        {
+            var roomId = Guid.NewGuid();
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _roomsService.UpdateRoomAsync(roomId, null));
+        }
+
+        [Fact]
+        public async Task UpdateRoomAsync_RoomDoesNotExist_ThrowsNotFoundException()
+        {
+            var roomId = Guid.NewGuid();
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(null));
+
+            var exception = await Assert.ThrowsAsync<NotFoundException>(() => _roomsService.UpdateRoomAsync(roomId, new RoomRequest()));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(11)]
+        [InlineData(-1)]
+        public async Task UpdateRoomAsync_SizeIsInvalid_ThrowsBadRequestException(int size)
+        {
+            var roomId = Guid.NewGuid();
+            var existingRoom = new Room { Id = roomId, Name = "Room 101", Size = 5, Details = null };
+
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(existingRoom));
+
+            var request = new RoomRequest { Size = size };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.UpdateRoomAsync(roomId, request));
+        }
+
+        [Fact]
+        public async Task UpdateRoomAsync_ValidRequest_ReturnsMappedRoom()
+        {
+            var roomId = Guid.NewGuid();
+            var existingRoom = new Room { Id = roomId, Name = "Room 101", Size = 2, Details = null };
+
+            _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(existingRoom));
+
+            var request = new RoomRequest { Name = "Room 102", Size = 3, Details = "Room is available." };
+
+            var result = await _roomsService.UpdateRoomAsync(roomId, request);
+
+            Assert.Equal("Room 102", result.Name);
+            Assert.Equal(3, result.Size);
+            Assert.Equal("Room is available.", result.Details);
         }
     }
 }
