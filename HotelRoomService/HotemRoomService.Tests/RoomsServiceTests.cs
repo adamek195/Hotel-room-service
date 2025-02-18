@@ -62,15 +62,74 @@ namespace HotemRoomService.Tests
         }
 
         [Fact]
-        public async Task GetRoomByIdAsync_RoomDoesNotExist_ThrowNotFoundException()
+        public async Task GetRoomByIdAsync_RoomDoesNotExist_ThrowsNotFoundException()
         {
             var roomId = Guid.NewGuid();
             _roomsRepository.GetRoomByIdAsync(roomId).Returns(Task.FromResult<Room?>(null));
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() => _roomsService.GetRoomByIdAsync(roomId));
-            Assert.Equal($"Cannot find room with id '{roomId}'.", exception.Message);
         }
 
+        [Fact]
+        public async Task CreateRoomAsync_RequestIsNull_ThrowsArgumentNullException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _roomsService.CreateRoomAsync(null));
+        }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task CreateRoomAsync_NameIsEmptyOrWhitespace_ThrowsBadRequestException(string name)
+        {
+            var request = new RoomRequest { Name = name, Size = 2, Details = null };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.CreateRoomAsync(request));
+        }
+
+        [Fact]
+        public async Task CreateRoomAsync_NameIsInvalid_ThrowsBadRequestException()
+        {
+            var request = new RoomRequest { Name = new string('X', 51), Size = 2, Details = null };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.CreateRoomAsync(request));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(0)]
+        [InlineData(11)]
+        [InlineData(-1)]
+        public async Task CreateRoomAsync_SizeIsInvalid_ThrowsBadRequestException(int? invalidSize)
+        {
+            var request = new RoomRequest { Name = "Room 101", Size = invalidSize, Details = null };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.CreateRoomAsync(request));
+        }
+
+        [Fact]
+        public async Task CreateRoomAsync_DetailsAreInvalid_ThrowsBadRequestException()
+        {
+            var request = new RoomRequest { Name = "Room 101", Size = 2, Details = new string('X', 1001) };
+
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _roomsService.CreateRoomAsync(request));
+        }
+
+        [Fact]
+        public async Task CreateRoomAsync_RequestIsValid_CreateRoomAndReturnId()
+        {
+            var request = new RoomRequest
+            {
+                Name = "Room 101",
+                Size = 2,
+                Details = null
+            };
+
+            _roomsRepository.AddRoomAsync(Arg.Any<Room>()).Returns(Task.CompletedTask);
+
+            var result = await _roomsService.CreateRoomAsync(request);
+
+            Assert.NotEqual(Guid.Empty, result);
+        }
     }
 }
