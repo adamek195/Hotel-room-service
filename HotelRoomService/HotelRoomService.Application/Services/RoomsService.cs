@@ -107,7 +107,7 @@ namespace HotelRoomService.Application.Services
 
             if ((request.Status == RoomStatus.ManuallyLocked || request.Status == RoomStatus.Maintenance)
                 && string.IsNullOrWhiteSpace(request.Details))
-                throw new BadRequestException($"It is mandatory to provide additional details for status {request.Status.ToString().ToLower()}.");
+                throw new BadRequestException($"It is mandatory to provide additional details for status {request.Status?.ToString().ToLower()}.");
 
             var room = await _roomsRepository.GetRoomByIdAsync(id);
             if (room == null)

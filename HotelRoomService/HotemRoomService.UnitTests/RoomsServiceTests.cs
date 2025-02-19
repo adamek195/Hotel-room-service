@@ -9,7 +9,7 @@ using System.Linq;
 using HotelRoomService.Application.Dtos;
 using HotelRoomService.Application.Exceptions;
 
-namespace HotemRoomService.Tests
+namespace HotemRoomService.UnitTests
 {
     public class RoomsServiceTests
     {
@@ -240,7 +240,7 @@ namespace HotemRoomService.Tests
         [InlineData(RoomStatus.Maintenance)]
         [InlineData(RoomStatus.Cleaning)]
         [InlineData(RoomStatus.Booked)]
-        public async Task ChangeStatusAsync_StatusIsNotAvailable_ReturnsIsNotAvailableRoome(RoomStatus status)
+        public async Task ChangeStatusAsync_StatusIsNotAvailable_ReturnsIsNotAvailableRoom(RoomStatus status)
         {
             var roomId = Guid.NewGuid();
             var existingRoom = new Room { Id = roomId, Name = "Room 101", Size = 2, Details = null, Status = RoomStatus.Available, IsAvailable = true };
