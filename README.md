@@ -18,7 +18,7 @@ Small hotel room microservice build with:
 
 3. In in appsetting.json, configure the database connection string:
 
-- `"HotelRoomServiceCS"` - set the connection string with the same environment variables defined in the **.env** file in
+- `"HotelRoomServiceCS"` - set the connection string with the same environment variables defined in the **.env** file
 
 4. In the main directory run the commands:
 
@@ -33,5 +33,9 @@ docker-compose up
 docker-compose down
 ```
 
+## How to run tests
 
-## How to test
+1. In folder scripts run the command:
+```bash
+dotnet-test.ps1
+```
