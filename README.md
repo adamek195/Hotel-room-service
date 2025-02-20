@@ -25,8 +25,13 @@ Small hotel room microservice build with:
 ```bash
 docker-compose build
 docker-compose up
+```
 
 5. To stop the server press Ctrl + C, then run the command:
+
+```bash
 docker-compose down
+```
+
 
 ## How to test
