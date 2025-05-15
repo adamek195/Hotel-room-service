@@ -16,7 +16,7 @@ Small hotel room microservice build with:
 
 2. Create file **appsettings.json** with the same settings as in **appsettings.defualt.json** in HotelRoomService.API folder.
 
-3. In in appsetting.json, configure the database connection string:
+3. In appsetting.json, configure the database connection string:
 
 - `"HotelRoomServiceCS"` - set the connection string with the same environment variables defined in the **.env** file
 
